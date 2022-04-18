@@ -5,7 +5,7 @@ import { FaSearch } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom';
 const Search = () => {
 
-    const [input,setInput] = useState("");
+    const [input, setInput] = useState("");
 
     const navigate = useNavigate()
 
@@ -13,7 +13,7 @@ const Search = () => {
     const submitHandler = (e) => {
         console.log("Search form submitted")
         e.preventDefault();
-        navigate('/searched/'+input)
+        navigate('/searched/' + input)
 
     }
 
@@ -22,7 +22,7 @@ const Search = () => {
 
             <div>
                 <FaSearch />
-                <input onChange={(e)=>setInput(e.target.value)} type="text" value={input} />
+                <input onChange={(e) => setInput(e.target.value)} type="text" value={input} />
             </div>
 
         </FormStyle>
@@ -30,7 +30,8 @@ const Search = () => {
 };
 
 const FormStyle = styled.form`
-    margin: 0rem 20rem;
+    margin: 0 auto;
+    max-width: 550px;
 
    
     div{
@@ -40,9 +41,9 @@ const FormStyle = styled.form`
     input{
         border: none;
         background: linear-gradient(35deg, #494949,#313131);
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: white;
-        padding: 1rem 3rem;
+        padding: .75rem 3rem;
         border: none;
         border-radius:1rem;
         outline: none;

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {motion} from 'framer-motion';
 import { Link, useParams} from 'react-router-dom';
+import ApiLimit from './ApiLimit';
 
 const Cuisine = () => {
 
     const [cuisine,setCuisine] = useState([])
+    const [apiLimitError,setApiLimitError] = useState("")
 
     let {type} = useParams()
 
@@ -17,8 +19,22 @@ const Cuisine = () => {
     const getCuisine = async (name) => {
         const data = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${name}`);
         const recipes = await data.json();
-        setCuisine(recipes.results);
 
+        if(recipes.code === 402 ){
+            setApiLimitError("As I am using Free Api, The Api limit crossed Today. Please Check again next day. Till Then browse My another projects Please.")
+
+        }
+        else{
+            setCuisine(recipes.results);
+           
+        }
+
+    }
+
+    if(apiLimitError){
+        return (
+            <ApiLimit message={apiLimitError}/>
+        )
     }
 
     return (

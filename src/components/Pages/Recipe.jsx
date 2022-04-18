@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import ApiLimit from './ApiLimit';
 const Recipe = () => {
 
     const [details, setDetails] = useState({})
     const [activeTab, setActiveTab] = useState("instructions");
+
+    const [apiLimitError,setApiLimitError] = useState("")
 
     const { name } = useParams()
 
@@ -15,9 +18,21 @@ const Recipe = () => {
     const fetchDetails = async () => {
 
         const data = await fetch(`https://api.spoonacular.com/recipes/${name}/information?apiKey=${process.env.REACT_APP_API_KEY}`)
-
         const detailData = await data.json();
-        setDetails(detailData);
+       
+        if(detailData.code === 402 ){
+            setApiLimitError("As I am using Free Api, The Api limit crossed Today. Please Check again next day. Till Then browse My another projects Please.")
+
+        }
+        else{
+            setDetails(detailData);
+           
+        }
+    }
+    if(apiLimitError){
+        return (
+            <ApiLimit message={apiLimitError}/>
+        )
     }
 
     return (
@@ -27,9 +42,12 @@ const Recipe = () => {
                 <img src={details.image} alt="" />
             </div>
             <Info>
+                <Flex>
+                
                 <Button className={activeTab === 'instructions' ? 'active' : ''} onClick={() => setActiveTab('instructions')}>Instructions</Button>
                 <Button className={activeTab === 'ingredients' ? 'active' : ''} onClick={() => setActiveTab('ingredients')}>Ingredients</Button>
 
+                </Flex>
                 {activeTab === 'instructions' &&   
                 <div>
                     <h3 dangerouslySetInnerHTML={{__html: details.summary}}></h3>
@@ -52,15 +70,24 @@ const Recipe = () => {
 
 
 const DetailsWrapper = styled.div`
-    margin-top: 10rem;
-    margin-bottom: 5rem;
-    display:flex;
-    
-        
+    width: 100%;
+    margin: 4rem auto;
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(20rem,1fr));
+    grid-gap: 2rem;
     .active{
         background: linear-gradient(35deg, #494949,#313131);
         color: white
     }
+
+    img{
+        width: 100%;
+    }
+    div{
+        width: 100%;
+
+    }
+   
 
     h2{
         margin-bottom: 2rem;
@@ -75,19 +102,28 @@ const DetailsWrapper = styled.div`
     }
 
 `
-
+const Flex = styled.div`
+    display: flex;
+    gap: 10px;
+    
+`
 const Button = styled.button`
-    padding: 1rem 2rem;
+    padding: .8rem 1.6rem;
     color: #313131;
     background: white;
     border: 2px solid black;
-    margin-right: 2rem;
+    
     font-weight: 600;
     cursor: pointer;
 
 `
 
 const Info = styled.div`
-    margin-left:10rem;
+    padding: 1rem;
+    h3{
+        font-size: .8rem;
+        line-height: 1.5rem;
+    }
+  
 `
 export default Recipe;
